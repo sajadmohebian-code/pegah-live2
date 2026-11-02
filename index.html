@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10285a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="پگاه زنده">
+<title>پگاه زنده</title>
+<style>
+:root{
+  --bg:#f1f4f9; --card:#fff; --text:#1c2433; --muted:#6a7488; --line:#dde3ee; --navy:#10285a; --blue:#1f5fd6;
+  --green:#1e9e55; --green-bg:#e4f5ec; --red:#d6362e; --red-bg:#fdeceb; --gray:#8b93a5; --gray-bg:#eceff4;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0e1320; --card:#171e2e; --text:#e8ecf5; --muted:#9aa4ba; --line:#2a3348; --navy:#a9c0ff; --blue:#6a9bff;
+    --green:#3ccf7a; --green-bg:#123020; --red:#ff6a60; --red-bg:#3a1b19; --gray:#7d869b; --gray-bg:#232b3d; }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px}
+.wrap{max-width:620px;margin:0 auto;padding:0 12px calc(24px + env(safe-area-inset-bottom))}
+.top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);
+  padding:calc(10px + env(safe-area-inset-top)) 14px 10px;display:flex;align-items:center;gap:10px}
+.top h1{font-size:16px;margin:0;color:var(--navy);flex:1}
+.ibtn{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;min-width:40px;height:40px;font-size:18px;font-family:inherit}
+.chip{display:inline-flex;gap:6px;align-items:center;padding:3px 10px;border-radius:99px;font-size:12px;background:var(--gray-bg);color:var(--muted)}
+.chip.ok{background:var(--green-bg);color:var(--green)} .chip.bad{background:var(--red-bg);color:var(--red)}
+.dot{width:9px;height:9px;border-radius:50%;background:currentColor;display:inline-block}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.sum div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center}
+.sum b{display:block;font-size:26px;line-height:1.2} .sum span{font-size:11px;color:var(--muted)}
+.sum .g b{color:var(--green)} .sum .r b{color:var(--red)} .sum .x b{color:var(--gray)}
+.sum .sel{outline:2px solid var(--blue)}
+.banner{background:var(--red-bg);color:var(--red);border:1px solid var(--red);border-radius:10px;padding:9px 12px;margin:10px 0;font-size:13px;display:none;white-space:pre-line}
+.m{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0;border-right:7px solid var(--gray)}
+.m.g{border-right-color:var(--green)} .m.r{border-right-color:var(--red)}
+.m .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m .n{font-weight:bold;font-size:15px}
+.st{font-size:12px;padding:2px 10px;border-radius:99px;background:var(--gray-bg);color:var(--gray);white-space:nowrap}
+.g .st{background:var(--green-bg);color:var(--green)} .r .st{background:var(--red-bg);color:var(--red)}
+.sub{color:var(--muted);font-size:12px;margin-top:5px}
+.stale .m{opacity:.55}
+.bar{display:flex;height:9px;border-radius:5px;overflow:hidden;background:var(--gray-bg);margin:8px 0 3px}
+.bar i{display:block}.bar .g{background:var(--green)}.bar .r{background:var(--red)}.bar .x{background:var(--gray)}
+svg{display:block;width:100%;height:auto}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.panel h2{margin:0 0 8px;font-size:14px;color:var(--navy)}
+.big{text-align:center;padding:18px 10px;border-radius:14px;margin:10px 0}
+.big.g{background:var(--green-bg);color:var(--green)} .big.r{background:var(--red-bg);color:var(--red)} .big.x{background:var(--gray-bg);color:var(--gray)}
+.big b{display:block;font-size:26px} .big span{font-size:13px}
+.pin{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:12px;color:var(--muted)}
+.pin:last-child{border:0}
+.axis text{fill:var(--muted);font-size:10px}
+.axis.big text{font-size:16px}
+.login{max-width:380px;margin:12vh auto 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.login h1{text-align:center;color:var(--navy);font-size:19px;margin:0 0 4px}
+.login p{text-align:center;color:var(--muted);font-size:12px;margin:0 0 14px}
+.login input[type=text],.login input[type=password]{width:100%;padding:13px;margin:6px 0;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg);color:var(--text);font-size:16px;font-family:inherit;direction:ltr;text-align:left}
+.login button{width:100%;padding:13px;margin-top:10px;border:0;border-radius:10px;background:var(--blue);color:#fff;font-size:16px;font-family:inherit}
+.login label{font-size:13px;color:var(--muted);display:block;margin-top:8px}
+.err{color:var(--red);font-size:13px;margin-top:10px;text-align:center;min-height:18px}
+.hide{display:none!important}
+.foot{color:var(--muted);font-size:11px;text-align:center;margin-top:14px}
+/* ---- لوگو ---- */
+.lgbadge{background:#fff;border-radius:12px;padding:3px 6px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.lgbadge img{display:block;height:34px;width:auto}
+.login .lgbig{display:flex;justify-content:center;margin:0 0 10px}
+.login .lgbig .lgbadge{padding:8px 14px;border-radius:18px}
+.login .lgbig img{height:92px}
+.foot .lgbadge{padding:2px 6px;margin-bottom:6px}.foot .lgbadge img{height:26px}
+/* ---- پنجره‌ی تأیید خروج (جایگزین confirm مرورگر که آدرس سایت را نشان می‌داد) ---- */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(10,16,30,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal .box{background:var(--card);color:var(--text);border-radius:16px;max-width:340px;width:100%;padding:20px 18px 16px;border:1px solid var(--line);text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.modal .mt{font-size:17px;font-weight:bold;color:var(--navy);margin-bottom:10px}
+.modal .mu{display:inline-block;direction:ltr;unicode-bidi:isolate;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 16px;font-size:16px;font-weight:bold;margin-bottom:10px}
+.modal .mq{font-size:14px;color:var(--muted);margin-bottom:14px}
+.modal .mb{display:flex;gap:10px}
+.modal .mb button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:15px;font-family:inherit}
+.modal .mb button.danger{background:var(--red);border-color:var(--red);color:#fff}
+/* ---- دستگاه متحرک ---- */
+.mc{display:block;width:100%;height:auto}
+.mc .spin{transform-box:fill-box;transform-origin:center}
+.mc.run .spin{animation:mspin 2.6s linear infinite}
+.mc.run .belt{animation:mbelt .55s linear infinite}
+.mc.run .flow{animation:mflow .7s linear infinite}
+.mc.run .pk{animation:mpk 2.4s linear infinite}
+.mc.run .lampg{animation:mglow 1.2s ease-in-out infinite}
+.mc.run .vib{animation:mvib .25s linear infinite}
+.mc.stop .lampr{animation:mblink 1s steps(2,start) infinite}
+@keyframes mspin{to{transform:rotate(360deg)}}
+@keyframes mbelt{to{stroke-dashoffset:-14}}
+@keyframes mflow{to{stroke-dashoffset:-12}}
+@keyframes mpk{0%{transform:translateX(0);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateX(46px);opacity:0}}
+@keyframes mglow{50%{opacity:.55}}
+@keyframes mblink{50%{opacity:.25}}
+@keyframes mvib{0%{transform:translateY(0)}50%{transform:translateY(-.6px)}100%{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.mc *{animation:none!important}}
+.m .mrow{display:flex;gap:10px;align-items:center}
+.m .mrow .ic{flex:0 0 74px;border-radius:10px;overflow:hidden;background:var(--gray-bg)}
+.m.g .ic{background:var(--green-bg)}.m.r .ic{background:var(--red-bg)}
+.m .mrow .tx{flex:1;min-width:0}
+.m .sub b{color:var(--text)}
+.m.g .tm{color:var(--green)}.m.r .tm{color:var(--red)}
+.m .tm{font-weight:bold}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px 12px;margin:10px 0}
+.hero .pic{border-radius:12px;overflow:hidden;background:var(--gray-bg);margin-bottom:10px}
+.hero.g .pic{background:var(--green-bg)}.hero.r .pic{background:var(--red-bg)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tiles div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.tiles span{display:block;font-size:11px;color:var(--muted)}
+.tiles b{display:block;font-size:15px;margin-top:2px}
+.tiles .g b{color:var(--green)}.tiles .r b{color:var(--red)}.tiles .x b{color:var(--gray)}
+.rng{display:grid;grid-template-columns:auto 1fr;gap:6px 8px;align-items:center;font-size:13px}
+.rng .sels{display:flex;gap:5px}
+.rng select{flex:1;min-width:0;padding:8px 4px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit;font-size:14px}
+.qb{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.qb button{flex:1;min-width:70px;padding:8px 6px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit;font-size:13px}
+.qb button.on{border-color:var(--blue);color:var(--blue)}
+.note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.7}
+.note.warn{color:var(--red)}
+.ev{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+.ev:last-child{border:0}
+.ev i{width:10px;height:10px;border-radius:50%;flex:0 0 10px}
+.ev .t{flex:1;color:var(--text)}.ev .d{color:var(--muted);white-space:nowrap}
+.tip{min-height:20px;font-size:12.5px;color:var(--text);text-align:center;margin-top:4px}
+.chartbox{touch-action:pan-y;user-select:none}
+
+</style>
+</head>
+<body>
+
+<div id="v_login" class="wrap hide">
+  <div class="login">
+    <div class="lgbig"><span class="lgbadge"><img src="logo.png" alt="پگاه"></span></div>
+    <h1>پگاه لرستان</h1>
+    <p>وضعیت زنده‌ی دستگاه‌ها</p>
+    <input id="u" type="text" placeholder="نام کاربری" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <input id="p" type="password" placeholder="رمز عبور" autocomplete="current-password">
+    <label><input id="rem" type="checkbox" checked> مرا در این گوشی به خاطر بسپار</label>
+    <button id="go">ورود</button>
+    <div class="err" id="err"></div>
+  </div>
+</div>
+
+<div id="v_app" class="hide">
+  <div class="top">
+    <button class="ibtn hide" id="back" aria-label="بازگشت">➜</button>
+    <span class="lgbadge"><img src="logo-sm.png" alt="پگاه" style="height:28px"></span>
+    <h1 id="title">وضعیت زنده‌ی دستگاه‌ها</h1>
+    <span class="chip" id="chip"><i class="dot"></i><span id="chipt">...</span></span>
+    <button class="ibtn" id="menu" aria-label="خروج">⏻</button>
+  </div>
+  <div class="wrap">
+    <div class="banner" id="banner"></div>
+    <div id="list">
+      <div class="sum" id="sum"></div>
+      <div id="cards"></div>
+    </div>
+    <div id="detail" class="hide"></div>
+    <div class="foot"><span class="lgbadge"><img src="logo-sm.png" alt="پگاه"></span><div id="foot"></div></div>
+  </div>
+</div>
+
+
+<div id="modal" class="modal hide" role="dialog" aria-modal="true">
+  <div class="box">
+    <div class="mt">خروج از برنامه</div>
+    <div class="mu" id="mu"></div>
+    <div class="mq">از برنامه خارج می‌شوید؟</div>
+    <div class="mb"><button id="mno">انصراف</button><button id="myes" class="danger">خروج</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* آدرس پروژه و کلید عمومی (publishable): محرمانه نیستند و برای همین کار طراحی شده‌اند.
+   رمز حساب همگام‌سازی هرگز در این برنامه نیست؛ ورود فقط با نام‌کاربری/رمز تعریف‌شده توسط ادمین است. */
+var SUPABASE_URL="https://esttnirutqpzqkvpjmlw.supabase.co";
+var SUPABASE_KEY="sb_publishable_959Nul-EFW5laUtXTMGQZQ_LiNQUCXx";
+var REFRESH_MS=20000, LS="pegah_live_login";
+
+var cred=null, who=null, rec=null, filter="all", view="list", timer=null, busy=false, lastErr="";
+var rng=null, detailFor=null;      // بازه‌ی تاریخ انتخاب‌شده در صفحه‌ی جزئیات
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function fa(n){return String(n).replace(/\d/g,function(d){return "۰۱۲۳۴۵۶۷۸۹"[d]})}
+function pad(n){return (n<10?"0":"")+n}
+function ts(s){return Date.parse(s)/1000}
+function clk(s){return fa(s.slice(11,16))}
+function hhmm(t){var d=new Date(t*1000);return fa(pad(d.getHours())+":"+pad(d.getMinutes()))}
+function fmtDur(sec){sec=Math.max(0,Math.round(sec));var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60);
+  if(h>=24)return fa(Math.floor(h/24))+" روز و "+fa(h%24)+" ساعت";
+  if(h>0)return fa(h)+" ساعت و "+fa(m)+" دقیقه"; if(m>0)return fa(m)+" دقیقه"; return fa(Math.round(sec))+" ثانیه"}
+/* مدت به‌صورت «ساعت و دقیقه»: ۲ ساعت و ۱۵ دقیقه  (بدون ثانیه) */
+function fmtHM(sec){var m=Math.max(0,Math.floor(sec/60)),h=Math.floor(m/60);m=m%60;
+  if(h>0&&m>0)return fa(h)+" ساعت و "+fa(m)+" دقیقه"; if(h>0)return fa(h)+" ساعت"; return fa(m)+" دقیقه"}
+function fmtClockDur(sec){var m=Math.max(0,Math.floor(sec/60));return fa(pad(Math.floor(m/60))+":"+pad(m%60))}
+function fmtMin(sec){var m=Math.round(sec/60);return m>=60?fa(Math.floor(m/60))+":"+fa(pad(m%60)):fa(m)+" دقیقه"}
+function cls(s){return s===1?"g":(s===0?"r":"x")}
+function txt(s){return s===1?"در حال کار":(s===0?"متوقف":"نامشخص")}
+var COL={"1":"var(--green)","0":"var(--red)","-1":"var(--gray)"};
+
+function getSaved(){try{return JSON.parse(localStorage.getItem(LS)||"null")}catch(e){return null}}
+function setSaved(c){try{if(c)localStorage.setItem(LS,JSON.stringify(c));else localStorage.removeItem(LS)}catch(e){}}
+
+/* ------------------------------------------------------------ تاریخ شمسی */
+function dv(a,b){return ~~(a/b)} function md(a,b){return a-~~(a/b)*b}
+var BRK=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+function jalCal(jy){
+  var gy=jy+621,leapJ=-14,jp=BRK[0],jm,jump=0,n,i,leapG,march,leap;
+  for(i=1;i<BRK.length;i++){jm=BRK[i];jump=jm-jp;if(jy<jm)break;leapJ+=dv(jump,33)*8+dv(md(jump,33),4);jp=jm}
+  n=jy-jp; leapJ+=dv(n,33)*8+dv(md(n,33)+3,4);
+  if(md(jump,33)===4&&jump-n===4)leapJ+=1;
+  leapG=dv(gy,4)-dv((dv(gy,100)+1)*3,4)-150; march=20+leapJ-leapG;
+  if(jump-n<6)n=n-jump+dv(jump+4,33)*33;
+  leap=md(md(n+1,33)-1,4); if(leap===-1)leap=4;
+  return {leap:leap,gy:gy,march:march};
+}
+function g2d(gy,gm,gd){var d=dv((gy+dv(gm-8,6)+100100)*1461,4)+dv(153*md(gm+9,12)+2,5)+gd-34840408;return d-dv(dv(gy+100100+dv(gm-8,6),100)*3,4)+752}
+function d2gx(jdn){var j=4*jdn+139361631;j=j+dv(dv(4*jdn+183187720,146097)*3,4)*4-3908;
+  var i=dv(md(j,1461),4)*5+308,gd=dv(md(i,153),5)+1,gm=md(dv(i,153),12)+1,gy=dv(j,1461)-100100+dv(8-gm,6);return {gy:gy,gm:gm,gd:gd}}
+function j2d(jy,jm,jd){var r=jalCal(jy);return g2d(r.gy,3,r.march)+(jm-1)*31-dv(jm,7)*(jm-7)+jd-1}
+function d2j(jdn){var gy=d2gx(jdn).gy,jy=gy-621,r=jalCal(jy),f=g2d(gy,3,r.march),k=jdn-f,jm,jd;
+  if(k>=0){if(k<=185){return {jy:jy,jm:1+dv(k,31),jd:md(k,31)+1}}k-=186}
+  else{jy-=1;k+=179;if(r.leap===1)k+=1}
+  return {jy:jy,jm:7+dv(k,30),jd:md(k,30)+1}}
+function toJal(gy,gm,gd){return d2j(g2d(gy,gm,gd))}
+function toGreg(jy,jm,jd){return d2gx(j2d(jy,jm,jd))}
+function jLeap(jy){return jalCal(jy).leap===0}
+function jDays(jy,jm){return jm<=6?31:(jm<=11?30:(jLeap(jy)?30:29))}
+var JM=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+function jOfTs(t){var d=new Date(t*1000);return toJal(d.getFullYear(),d.getMonth()+1,d.getDate())}
+function jStr(j){return fa(j.jd)+" "+JM[j.jm-1]}
+function jStrFull(j){return fa(j.jy)+"/"+fa(pad(j.jm))+"/"+fa(pad(j.jd))}
+function dayStart(j){var g=toGreg(j.jy,j.jm,j.jd);return new Date(g.gy,g.gm-1,g.gd,0,0,0).getTime()/1000}
+function cmpJ(a,b){return (a.jy-b.jy)||(a.jm-b.jm)||(a.jd-b.jd)}
+
+/* ------------------------------------------------------------ نوع دستگاه (مثل نسخه‌ی ویندوز) */
+function norm(s){return String(s||"").replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[\u200c\u200f\u200e]/g," ").replace(/\s+/g," ").toLowerCase()}
+function monKind(name){var n=norm(name);
+  if(n.indexOf("تتراپک")>=0||n.indexOf("تترا پک")>=0)return "tetra";
+  if(/پری ?پک استریل/.test(n))return "pouch_s";
+  if(/پری ?پک/.test(n))return "pouch_p";
+  if(n.indexOf("تری بلوک")>=0||n.indexOf("دوغ")>=0)return "bottle";
+  if(n.indexOf("ماست")>=0||n.indexOf("کشک")>=0)return "cup";
+  if(n.indexOf("فیلینگ")>=0||n.indexOf("uf")>=0||n.indexOf("پنیر")>=0)return "cheese";
+  if(n.indexOf("کره")>=0)return "butter";
+  if(n.indexOf("شیر خشک")>=0)return "powder";
+  return "generic"}
+function item(kind){   // شکل محصول خروجی (مرکز در 0،0)
+  var st='stroke="#2F5BE0" stroke-width="1.2"';
+  switch(kind){
+    case "pouch_s":case "pouch_p":return '<path d="M-8 6Q-9-6-4-8H4Q9-6 8 6Z" fill="#fff" '+st+'/><rect x="-6" y="-1" width="12" height="4" fill="#2F5BE0"/>';
+    case "bottle":return '<rect x="-2.5" y="-9" width="5" height="4" fill="#2F5BE0"/><path d="M-6-5H6V8H-6Z" fill="#fff" '+st+'/><rect x="-6" y="0" width="12" height="4" fill="#2F5BE0"/>';
+    case "cup":return '<path d="M-7-6H7L5 8H-5Z" fill="#fff" '+st+'/><rect x="-7.5" y="-8" width="15" height="3" fill="#2F5BE0"/>';
+    case "cheese":return '<path d="M-8-4H8L6 8H-6Z" fill="#fff" '+st+'/><rect x="-8.5" y="-7" width="17" height="3.5" fill="#E6B422"/>';
+    case "butter":return '<rect x="-9" y="-4" width="18" height="11" rx="1.5" fill="#F6E27A" stroke="#C9A227" stroke-width="1.2"/><rect x="-9" y="0" width="18" height="3" fill="#fff" opacity=".7"/>';
+    case "powder":return '<path d="M-7 8V-6L-4-8H4L7-6V8Z" fill="#fff" '+st+'/><rect x="-7" y="-1" width="14" height="4" fill="#2F5BE0"/>';
+    default:return '<path d="M-7-8H7V8H-7Z" fill="#fff" '+st+'/><rect x="-7" y="-2" width="14" height="4" fill="#2F5BE0"/><path d="M-7-8L-4-11H4L7-8" fill="#fff" '+st+'/>';
+  }
+}
+/* تصویر متحرک دستگاه: سبز و چرخان = روشن، قرمز و ثابت = خاموش/متوقف، خاکستری = نامشخص */
+function machineSVG(kind,state,tag){
+  var m=state===1?"run":(state===0?"stop":"unk"),col=state===1?"#2E9E3F":(state===0?"#D32F2F":"#8b93a5");
+  var o='<svg class="mc '+m+'" viewBox="0 0 200 118" role="img" aria-label="'+esc(tag||"")+'">';
+  o+='<rect x="0" y="0" width="200" height="118" fill="'+col+'" opacity=".07"/>';
+  // مخزن و لوله ورودی
+  o+='<rect x="12" y="38" width="26" height="52" rx="4" fill="#DDE5EE" stroke="#8793A3"/><rect x="16" y="62" width="18" height="24" fill="#F6F3EA"/><rect x="16" y="52" width="18" height="10" fill="#1C2F4A"/>';
+  o+='<path d="M38 80H70" stroke="#C9D3DF" stroke-width="6" stroke-linecap="round" fill="none"/><path class="flow" d="M38 80H70" stroke="#fff" stroke-width="2.4" stroke-dasharray="6 6" fill="none"/>';
+  // بدنه‌ی دستگاه
+  o+='<g class="vib"><rect x="70" y="34" width="78" height="64" rx="5" fill="#EEF2F7" stroke="'+col+'" stroke-width="3"/>';
+  o+='<rect x="82" y="16" width="54" height="20" rx="3" fill="#D5DCE6" stroke="#8793A3"/><rect x="104" y="8" width="10" height="9" fill="#8793A3"/>';
+  o+='<circle cx="109" cy="66" r="21" fill="#fff" stroke="#5B6677" stroke-width="2.5"/>';
+  o+='<g class="spin"><circle cx="109" cy="66" r="3" fill="#5B6677"/>';
+  for(var a=0;a<4;a++){var r=a*Math.PI/4;o+='<line x1="'+(109-17*Math.cos(r)).toFixed(1)+'" y1="'+(66-17*Math.sin(r)).toFixed(1)+'" x2="'+(109+17*Math.cos(r)).toFixed(1)+'" y2="'+(66+17*Math.sin(r)).toFixed(1)+'" stroke="#5B6677" stroke-width="2.4"/>'}
+  o+='<circle cx="109" cy="45" r="3" fill="'+col+'"/></g></g>';
+  // چراغ برجکی
+  o+='<rect x="158" y="30" width="4" height="60" fill="#8793A3"/><rect x="152" y="12" width="16" height="30" rx="4" fill="#2b3446"/>';
+  o+='<circle class="lampr" cx="160" cy="19" r="4.2" fill="'+(state===0?"#ff4b3e":"#5a3a3a")+'"/><circle cx="160" cy="27" r="4.2" fill="#5d5530"/><circle class="lampg" cx="160" cy="35" r="4.2" fill="'+(state===1?"#3ddc84":"#2f4a3a")+'"/>';
+  // نوار نقاله و محصول
+  o+='<rect x="148" y="90" width="48" height="9" rx="2" fill="#C9D3DF"/><path class="belt" d="M150 94.5H194" stroke="#fff" stroke-width="2" stroke-dasharray="7 7" fill="none"/>';
+  o+='<path d="M10 99H196" stroke="#8793A3" stroke-width="2.5"/>';
+  if(state===1){for(var k=0;k<3;k++)o+='<g class="pk" style="animation-delay:-'+(k*0.8)+'s"><g transform="translate(150 82)">'+item(kind)+'</g></g>'}
+  else{o+='<g transform="translate(160 82)">'+item(kind)+'</g><g transform="translate(180 82)">'+item(kind)+'</g>'}
+  // برچسب وضعیت
+  o+='<rect x="12" y="104" width="58" height="11" rx="5.5" fill="'+col+'"/><text x="41" y="112.4" font-size="8" fill="#fff" text-anchor="middle" font-family="Tahoma,Arial">'+(state===1?"روشن":(state===0?"خاموش":"نامشخص"))+'</text>';
+  return o+'</svg>';
+}
+
+/* ------------------------------------------------------------ ارتباط با ابر */
+async function call(){
+  var h={"apikey":SUPABASE_KEY,"Content-Type":"application/json"};
+  if(SUPABASE_KEY.indexOf("sb_")!==0) h["Authorization"]="Bearer "+SUPABASE_KEY;   // کلیدهای قدیمی JWT
+  var r=await fetch(SUPABASE_URL+"/rest/v1/rpc/live_login",{method:"POST",headers:h,body:JSON.stringify({p_user:cred.u,p_pass:cred.p})});
+  if(!r.ok){
+    var t="";try{t=await r.text()}catch(e){}
+    if(/PGRST202|Could not find the function/i.test(t)) throw new Error("تابع ورود در ابر ساخته نشده است (فایل SQL را اجرا کنید).");
+    throw new Error("خطای سرور ("+r.status+")");
+  }
+  return r.json();
+}
+async function refresh(){
+  if(busy||!cred) return; busy=true;
+  try{
+    var d=await call();
+    if(!d.ok){
+      var m={invalid:"نام کاربری یا رمز اشتباه است.",locked:"به‌دلیل چند بار ورود ناموفق، چند دقیقه صبر کنید.",
+             no_users:"فهرست کاربران هنوز به ابر نرسیده است.",bad_input:"ورودی نامعتبر است."}[d.error]||"ورود ناموفق.";
+      stopTimer(); setSaved(null); cred=null; showLogin(m); return;
+    }
+    who={name:d.name,role:d.role}; lastErr="";
+    rec={live:d.live,mtime:d.client_mtime,server:d.server_time,got:Date.now()/1000};
+    $("banner").style.display="none"; render();
+  }catch(e){
+    var msg=(e&&e.message)||String(e);
+    if(/Failed to fetch|NetworkError|Load failed/i.test(msg)) msg="اینترنت گوشی قطع است.";
+    lastErr=msg; showBanner("⚠ "+msg+(rec?"\nآخرین داده‌ی دریافتی نمایش داده می‌شود.":""));
+  }finally{busy=false}
+}
+function startTimer(){stopTimer();timer=setInterval(function(){if(!document.hidden)refresh()},REFRESH_MS);
+  tick=setInterval(function(){if(!document.hidden&&rec&&cred)render()},30000)}
+var tick=null;
+function stopTimer(){if(timer){clearInterval(timer);timer=null}if(tick){clearInterval(tick);tick=null}}
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&cred)refresh()});
+
+/* ------------------------------------------------------------ محاسبه روی خط زمانی */
+function clipSegs(tl,a,b){   // بخش‌های [شروع،پایان،وضعیت] داخل بازه‌ی a..b
+  var out=[];
+  for(var i=0;i<tl.length;i++){
+    var s=ts(tl[i][0]),e=i+1<tl.length?ts(tl[i+1][0]):b,st=tl[i][1];
+    var x=Math.max(a,s),y=Math.min(b,e); if(y>x)out.push([x,y,st,s,i+1>=tl.length]);
+  }
+  return out;
+}
+function statsOf(segs){var r={run:0,stop:0,unk:0,n:0};
+  segs.forEach(function(g){var d=g[1]-g[0];if(g[2]===1)r.run+=d;else if(g[2]===0){r.stop+=d;r.n++}else r.unk+=d});return r}
+function niceStep(span){var c=[600,1800,3600,7200,10800,21600,43200,86400,172800,432000];for(var i=0;i<c.length;i++)if(span/c[i]<=7)return c[i];return 604800}
+
+/* نمودار لحظه‌ای اصلاح‌شده: خط وضعیت (کار/توقف) + نوار رنگی + محور زمان با خط‌های راهنما */
+function rangeChart(tl,a,b,dayLabels){
+  var W=600,H=206,L=8,R=8,pw=W-L-R,span=Math.max(60,b-a),X=function(t){return L+pw*(t-a)/span};
+  var yR=26,yS=96,o='<svg id="chsvg" viewBox="0 0 '+W+' '+H+'" class="axis big" data-a="'+a+'" data-b="'+b+'" style="direction:ltr">';
+  var step=niceStep(span),t0=Math.ceil(a/step)*step;
+  // تراز ساعت گرد (بر اساس ساعت محلی)
+  var off=new Date(a*1000).getTimezoneOffset()*60;t0=Math.ceil((a-off)/step)*step+off;
+  for(var t=t0;t<=b;t+=step){var x=X(t).toFixed(1),d=new Date(t*1000),mid=d.getHours()===0&&d.getMinutes()===0;
+    o+='<line x1="'+x+'" x2="'+x+'" y1="8" y2="150" stroke="var(--line)" '+(mid?'stroke-width="1.6"':'stroke-dasharray="3 4"')+'/>';
+    o+='<text x="'+x+'" y="166" text-anchor="middle">'+hhmm(t)+'</text>';
+    if(mid||(dayLabels&&t===t0))o+='<text x="'+x+'" y="192" text-anchor="middle" style="fill:var(--navy);font-weight:bold">'+esc(jStr(jOfTs(t+60)))+'</text>';
+  }
+  o+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+yR+'" y2="'+yR+'" stroke="var(--line)"/><line x1="'+L+'" x2="'+(W-R)+'" y1="'+yS+'" y2="'+yS+'" stroke="var(--line)"/>';
+  o+='<text x="'+(W-R-2)+'" y="20" text-anchor="end">کار</text><text x="'+(W-R-2)+'" y="114" text-anchor="end">توقف</text>';
+  var segs=clipSegs(tl,a,b),Y={"1":yR,"0":yS};
+  for(var i=0;i<segs.length;i++){var g=segs[i],x1=X(g[0]),x2=X(g[1]),s=g[2];
+    if(s===-1){o+='<rect x="'+x1.toFixed(1)+'" y="'+yR+'" width="'+Math.max(.8,x2-x1).toFixed(1)+'" height="'+(yS-yR)+'" fill="var(--gray)" opacity=".18"/>';continue}
+    if(s===1)o+='<rect x="'+x1.toFixed(1)+'" y="'+yR+'" width="'+Math.max(.8,x2-x1).toFixed(1)+'" height="'+(yS-yR)+'" fill="var(--green)" opacity=".08"/>';
+    o+='<line x1="'+x1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y1="'+Y[s]+'" y2="'+Y[s]+'" stroke="'+COL[s]+'" stroke-width="3.4" stroke-linecap="round"/>';
+    var nx=segs[i+1];
+    if(nx&&nx[2]!==-1&&s!==-1)o+='<line x1="'+x2.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y1="'+Y[s]+'" y2="'+Y[nx[2]]+'" stroke="var(--muted)" stroke-width="1.2" opacity=".7"/>';
+  }
+  for(i=0;i<segs.length;i++){g=segs[i];o+='<rect x="'+X(g[0]).toFixed(1)+'" y="118" width="'+Math.max(.8,X(g[1])-X(g[0])).toFixed(1)+'" height="22" fill="'+COL[g[2]]+'"/>'}
+  o+='<rect x="'+L+'" y="118" width="'+pw+'" height="22" rx="3" fill="none" stroke="var(--line)"/>';
+  o+='<line id="chcur" x1="-9" x2="-9" y1="8" y2="150" stroke="var(--blue)" stroke-width="1.6"/>';
+  return o+'</svg>';
+}
+function bindChart(tl){
+  var s=$("chsvg"); if(!s)return;
+  var tip=$("chtip"),a=+s.getAttribute("data-a"),b=+s.getAttribute("data-b");
+  function at(ev){
+    var r=s.getBoundingClientRect(),p=ev.touches?ev.touches[0]:ev,fx=(p.clientX-r.left)/r.width;
+    fx=Math.min(1,Math.max(0,(fx*600-8)/584));var t=a+fx*(b-a),cur=$("chcur"),x=8+584*fx;
+    cur.setAttribute("x1",x);cur.setAttribute("x2",x);
+    var g=clipSegs(tl,a,b).filter(function(q){return t>=q[0]&&t<=q[1]})[0];
+    tip.innerHTML=g?('ساعت <b>'+hhmm(t)+'</b> — <span style="color:'+COL[g[2]]+'">'+txt(g[2])+'</span> · از '+hhmm(g[0])+' تا '+(g[4]?'اکنون':hhmm(g[1]))):'';
+  }
+  s.addEventListener("pointerdown",at);s.addEventListener("pointermove",function(e){if(e.buttons||e.pointerType==="touch")at(e)});
+}
+
+/* ------------------------------------------------------------ نمایش */
+function showBanner(t){var b=$("banner");b.textContent=t;b.style.display="block"}
+function opOf(m,p){return String(m.operator||m.op||m.operator_name||(p.operators&&p.operators[m.name])||"").trim()}
+function curNow(p,age,stale){var nowS=ts(p.now);return stale?nowS:nowS+Math.max(0,age)+(Date.now()/1000-rec.got)}
+function render(){
+  if(!rec||!rec.live){showBanner("هنوز وضعیتی از سیستم پل به ابر نرسیده است.");$("cards").innerHTML="";$("sum").innerHTML="";return}
+  var p=rec.live, age=(rec.server||rec.got)-(rec.mtime||0), stale=age>120, now=curNow(p,age,stale);
+  var chip=$("chip");chip.className="chip "+(stale?"bad":"ok");$("chipt").textContent=stale?("قطع — "+fmtDur(age)+" پیش"):"زنده";
+  document.body.className=stale?"stale":"";
+  var msgs=[];
+  if(stale)msgs.push("⚠ سیستم پل داده‌ی تازه نمی‌فرستد؛ وضعیت‌ها مربوط به "+fmtDur(age)+" پیش است.");
+  if(p.log_found===false)msgs.push("⚠ فایل سیگنال روی سیستم پل پیدا نشد.");
+  if((p.boards_down||[]).length)msgs.push("⚠ ارتباط با تابلو قطع: "+p.boards_down.join("، "));
+  if(msgs.length)showBanner(msgs.join("\n"));else $("banner").style.display="none";
+  var ms=p.machines||[];
+  if(view==="list") renderList(p,ms,now); else renderDetail(p,ms,now,stale);
+  $("foot").textContent=(who?who.name+" · ":"")+"آخرین رکورد سیگنال: "+(p.last_record?fa(p.last_record.replace("T"," ")):"—");
+}
+/* ساعتِ شروع و مدتِ روشن/خاموش بودن (ساعت و دقیقه) */
+function sinceHtml(m,p,now){
+  var hrs=p.timeline_hours||24;
+  if(m.state===-1)return '<span class="tm">سیگنال نامشخص</span>';
+  var word=m.state===1?"روشن":"خاموش";
+  if(m.since){var d=now-ts(m.since);
+    return '<span class="tm">'+word+' از ساعت '+clk(m.since)+'</span> · '+(m.state===1?"مدت کارکرد: ":"مدت توقف: ")+'<b>'+fmtHM(d)+'</b>'}
+  return '<span class="tm">'+word+' — بدون تغییر در '+fa(Math.max(hrs,48))+' ساعت اخیر</span>';
+}
+function renderList(p,ms,now){
+  var c=p.counts||{running:0,stopped:0,unknown:0};
+  var mk=function(k,cl,n,l){return '<div class="'+cl+(String(filter)===k?" sel":"")+'" data-f="'+k+'"><b>'+fa(n)+'</b><span>'+l+'</span></div>'};
+  $("sum").innerHTML=mk("1","g",c.running,"🟢 در حال کار")+mk("0","r",c.stopped,"🔴 متوقف")+mk("-1","x",c.unknown,"⚪ نامشخص");
+  var list=ms.filter(function(m){return filter==="all"||String(m.state)===String(filter)})
+    .sort(function(a,b){var o={"0":0,"-1":1,"1":2};return (o[a.state]-o[b.state])||a.name.localeCompare(b.name,"fa")});
+  $("cards").innerHTML=list.map(function(m){
+    var a=m.today,tot=a.run+a.stop+a.unk||1,kind=monKind(m.name);
+    return '<div class="m '+cls(m.state)+'" data-n="'+esc(m.name)+'"><div class="mrow"><div class="ic">'+machineSVG(kind,m.state,m.name)+'</div>'
+      +'<div class="tx"><div class="row"><span class="n">'+esc(m.name)+'</span><span class="st">'+txt(m.state)+'</span></div>'
+      +'<div class="sub">'+sinceHtml(m,p,now)+'</div></div></div>'
+      +strip(m.timeline,now,p.timeline_hours||24,14)
+      +'<div class="bar"><i class="g" style="width:'+(a.run/tot*100).toFixed(1)+'%"></i><i class="r" style="width:'+(a.stop/tot*100).toFixed(1)+'%"></i><i class="x" style="width:'+(a.unk/tot*100).toFixed(1)+'%"></i></div>'
+      +'<div class="sub" style="display:flex;justify-content:space-between"><span>امروز: کار '+fmtMin(a.run)+'</span><span>توقف '+fmtMin(a.stop)+'</span></div></div>';
+  }).join("")||'<div class="sub" style="text-align:center;padding:20px">دستگاهی با این فیلتر نیست.</div>';
+}
+function strip(tl,nowS,hours,h){
+  var W=600,t1=nowS,t0=nowS-hours*3600,o='<svg viewBox="0 0 '+W+' '+h+'" preserveAspectRatio="none" style="height:'+h+'px;border-radius:6px;margin-top:8px">';
+  for(var i=0;i<tl.length;i++){var a=Math.max(t0,ts(tl[i][0])),b=i+1<tl.length?ts(tl[i+1][0]):t1;if(b<=a)continue;
+    o+='<rect x="'+((a-t0)/(t1-t0)*W).toFixed(1)+'" y="0" width="'+Math.max(.8,(b-a)/(t1-t0)*W).toFixed(1)+'" height="'+h+'" fill="'+COL[tl[i][1]]+'"/>'}
+  return o+'</svg>';
+}
+
+/* ---------- صفحه‌ی جزئیات دستگاه ---------- */
+function selHtml(id,opts,val){return '<select id="'+id+'">'+opts.map(function(o){return '<option value="'+o[0]+'"'+(String(o[0])===String(val)?' selected':'')+'>'+o[1]+'</option>'}).join("")+'</select>'}
+function dayOpts(jy,jm){var r=[];for(var d=1;d<=jDays(jy,jm);d++)r.push([d,fa(d)]);return r}
+function monOpts(){return JM.map(function(n,i){return [i+1,n]})}
+function yearOpts(cy){return [cy-1,cy].map(function(y){return [y,fa(y)]})}
+function initRange(m,p,now){
+  var today=jOfTs(now),first=m.timeline&&m.timeline.length?jOfTs(ts(m.timeline[0][0])):today;
+  rng={from:first,to:today,q:"all"};
+}
+function buildDetail(m,p,now){
+  var today=jOfTs(now);
+  var f=rng.from,t=rng.to;
+  $("detail").innerHTML=
+    '<div id="d_hero"></div>'
+   +'<div class="panel"><h2>📅 بازه‌ی تاریخ</h2><div class="rng">'
+   +'<span>از تاریخ</span><div class="sels">'+selHtml("fy",yearOpts(today.jy),f.jy)+selHtml("fm",monOpts(),f.jm)+selHtml("fd",dayOpts(f.jy,f.jm),f.jd)+'</div>'
+   +'<span>تا تاریخ</span><div class="sels">'+selHtml("ty",yearOpts(today.jy),t.jy)+selHtml("tm",monOpts(),t.jm)+selHtml("td",dayOpts(t.jy,t.jm),t.jd)+'</div></div>'
+   +'<div class="qb"><button data-q="today">امروز</button><button data-q="yest">دیروز</button><button data-q="all">همه‌ی داده‌ها</button></div>'
+   +'<div class="note" id="d_note"></div></div>'
+   +'<div id="d_res"></div><div id="d_today"></div><div id="d_pins"></div>';
+  function readSel(pre){var y=+$(pre+"y").value,mo=+$(pre+"m").value,d=+$(pre+"d").value;var mx=jDays(y,mo);if(d>mx)d=mx;return {jy:y,jm:mo,jd:d}}
+  function fillDays(pre){var j=readSel(pre),s=$(pre+"d");s.innerHTML=dayOpts(j.jy,j.jm).map(function(o){return '<option value="'+o[0]+'"'+(o[0]===j.jd?' selected':'')+'>'+o[1]+'</option>'}).join("")}
+  ["f","t"].forEach(function(pre){
+    ["y","m"].forEach(function(k){$(pre+k).onchange=function(){fillDays(pre);apply()}});
+    $(pre+"d").onchange=apply;
+  });
+  function apply(){rng.from=readSel("f");rng.to=readSel("t");rng.q="";render()}
+  var qb=$("detail").querySelectorAll(".qb button");
+  qb.forEach(function(b){b.onclick=function(){
+    var q=b.getAttribute("data-q"),td=jOfTs(curNowNow()),first=firstDay();
+    if(q==="today"){rng.from=td;rng.to=td}
+    else if(q==="yest"){var g=jOfTs(dayStart(td)-3600*6);rng.from=g;rng.to=g}
+    else{rng.from=first;rng.to=td}
+    rng.q=q;setSel();render()}});
+  function setSel(){["f","t"].forEach(function(pre){var j=pre==="f"?rng.from:rng.to;
+    $(pre+"y").value=j.jy;$(pre+"m").value=j.jm;fillDays0(pre,j);})}
+  function fillDays0(pre,j){var s=$(pre+"d");s.innerHTML=dayOpts(j.jy,j.jm).map(function(o){return '<option value="'+o[0]+'"'+(o[0]===j.jd?' selected':'')+'>'+o[1]+'</option>'}).join("")}
+  function curNowNow(){var q=rec.live,ag=(rec.server||rec.got)-(rec.mtime||0);return curNow(q,ag,ag>120)}
+  function firstDay(){var mm=(rec.live.machines||[]).filter(function(x){return x.name===view})[0];
+    return mm&&mm.timeline&&mm.timeline.length?jOfTs(ts(mm.timeline[0][0])):jOfTs(curNowNow())}
+}
+function renderDetail(p,ms,now,stale){
+  var m=ms.filter(function(x){return x.name===view})[0];
+  if(!m){$("detail").innerHTML='<div class="panel">این دستگاه پیدا نشد.</div>';detailFor=null;return}
+  if(detailFor!==view){initRange(m,p,now);buildDetail(m,p,now);detailFor=view}
+  var a=m.today,tot=a.run+a.stop+a.unk||1,hrs=p.timeline_hours||24,kind=monKind(m.name),c=cls(m.state);
+  var op=opOf(m,p),dur=m.since?now-ts(m.since):null;
+  $("d_hero").innerHTML='<div class="hero '+c+'"><div class="pic">'+machineSVG(kind,m.state,m.name)+'</div>'
+    +'<div class="tiles">'
+    +'<div class="'+c+'"><span>وضعیت</span><b>'+(m.state===1?"🟢 روشن (در حال کار)":m.state===0?"🔴 خاموش (متوقف)":"⚪ نامشخص")+'</b></div>'
+    +'<div class="'+c+'"><span>'+(m.state===1?"مدت کارکرد":m.state===0?"مدت توقف":"مدت")+'</span><b>'+(dur==null?"—":fmtClockDur(dur)+'<small style="font-weight:normal;font-size:11px;color:var(--muted)"> ('+fmtHM(dur)+')</small>')+'</b></div>'
+    +'<div><span>'+(m.state===1?"روشن از ساعت":"خاموش از ساعت")+'</span><b>'+(m.since?clk(m.since):"—")+'</b></div>'
+    +'<div><span>اپراتور فعلی</span><b>'+(op?esc(op):"—")+'</b></div></div>'
+    +(op?'':'<div class="note">نام اپراتور هنوز از سیستم پل به ابر ارسال نمی‌شود.</div>')+'</div>';
+  // --- بازه‌ی انتخاب‌شده
+  var tl=m.timeline||[],avail=tl.length?ts(tl[0][0]):now,fromT=dayStart(rng.from),toT=dayStart(rng.to)+86400;
+  var bad=cmpJ(rng.from,rng.to)>0,note="";
+  if(bad){var tmp=rng.from;rng.from=rng.to;rng.to=tmp;fromT=dayStart(rng.from);toT=dayStart(rng.to)+86400}
+  var a0=fromT,b0=Math.min(toT,now);
+  if(a0<avail){if(cmpJ(rng.from,jOfTs(avail))<0)note="⚠ داده‌ی ذخیره‌شده‌ی این دستگاه در ابر از "+jStr(jOfTs(avail))+" ساعت "+hhmm(avail)+" شروع می‌شود؛ قبل از آن نمایش داده نمی‌شود."; a0=avail}
+  if(b0<=a0){b0=Math.min(now,a0+3600)}
+  $("d_note").className="note"+(note?" warn":"");
+  $("d_note").textContent=note||("نمایش از "+jStrFull(rng.from)+" تا "+jStrFull(rng.to)+" (تا لحظه‌ی کنونی). داده‌ی موجود: "+fa(Math.round((now-avail)/3600))+" ساعت اخیر.");
+  $("detail").querySelectorAll(".qb button").forEach(function(b){b.className=b.getAttribute("data-q")===rng.q?"on":""});
+  var segs=clipSegs(tl,a0,b0),S=statsOf(segs),known=S.run+S.stop,span=b0-a0||1;
+  var multi=(b0-a0)>26*3600;
+  var ev=segs.slice().reverse().slice(0,60).map(function(g){
+    var pre=multi?fa(jStr(jOfTs(g[0])))+" ":"";
+    return '<div class="ev"><i style="background:'+COL[g[2]]+'"></i><span class="t">'+txt(g[2])+' · '+pre+hhmm(g[0])+' ← '+(g[4]?"اکنون":hhmm(g[1]))+'</span><span class="d">'+fmtHM(g[1]-g[0])+'</span></div>'}).join("");
+  $("d_res").innerHTML='<div class="panel"><h2>📈 نمودار لحظه‌ای وضعیت</h2><div class="chartbox">'+rangeChart(tl,a0,b0,multi)+'</div><div class="tip" id="chtip">برای دیدن ساعت دقیق، روی نمودار بکشید یا لمس کنید.</div></div>'
+   +'<div class="panel"><h2>خلاصه‌ی بازه</h2>'
+   +'<div class="bar" style="height:14px"><i class="g" style="width:'+(S.run/span*100).toFixed(1)+'%"></i><i class="r" style="width:'+(S.stop/span*100).toFixed(1)+'%"></i><i class="x" style="width:'+(S.unk/span*100).toFixed(1)+'%"></i></div>'
+   +'<div class="pin"><span>🟢 کارکرد</span><span>'+fmtHM(S.run)+(known?' ('+fa(Math.round(S.run/known*100))+'٪)':'')+'</span></div>'
+   +'<div class="pin"><span>🔴 توقف</span><span>'+fmtHM(S.stop)+(known?' ('+fa(Math.round(S.stop/known*100))+'٪)':'')+'</span></div>'
+   +'<div class="pin"><span>⚪ نامشخص / قطع ارتباط</span><span>'+fmtHM(S.unk)+'</span></div>'
+   +'<div class="pin"><span>تعداد توقف‌ها</span><span>'+fa(S.n)+'</span></div></div>'
+   +'<div class="panel"><h2>رویدادها (تازه‌ترین بالا)</h2>'+(ev||'<div class="note">رویدادی در این بازه نیست.</div>')+'</div>';
+  bindChart(tl);
+  $("d_today").innerHTML='<div class="panel"><h2>امروز (از ساعت ۰۰:۰۰)</h2>'
+   +'<div class="bar" style="height:14px"><i class="g" style="width:'+(a.run/tot*100).toFixed(1)+'%"></i><i class="r" style="width:'+(a.stop/tot*100).toFixed(1)+'%"></i><i class="x" style="width:'+(a.unk/tot*100).toFixed(1)+'%"></i></div>'
+   +'<div class="pin"><span>🟢 کارکرد</span><span>'+fmtMin(a.run)+' ('+fa(Math.round(a.run/tot*100))+'٪)</span></div>'
+   +'<div class="pin"><span>🔴 توقف</span><span>'+fmtMin(a.stop)+' ('+fa(Math.round(a.stop/tot*100))+'٪)</span></div>'
+   +'<div class="pin"><span>⚪ نامشخص / قطع ارتباط</span><span>'+fmtMin(a.unk)+'</span></div></div>';
+  $("d_pins").innerHTML='<div class="panel"><h2>ورودی‌های تابلو</h2>'+(m.pins||[]).map(function(q){
+      return '<div class="pin"><span>'+esc(q.code||"")+" "+esc(q.dname||"")+(q.side?" ("+esc(q.side)+")":"")+'</span><span>'
+        +(q.link?"":"⛔ قطع · ")+(q.val===null?"؟":(q.val?"۱":"۰"))+' · پین '+fa(q.pin)+'</span></div>'}).join("")+'</div>';
+}
+function setView(v,push){
+  view=v; detailFor=null;
+  $("list").classList.toggle("hide",v!=="list");$("detail").classList.toggle("hide",v==="list");
+  $("back").classList.toggle("hide",v==="list");$("title").textContent=v==="list"?"وضعیت زنده‌ی دستگاه‌ها":v;
+  if(push){try{history.pushState({v:v},"",v==="list"?"#":"#m="+encodeURIComponent(v))}catch(e){}}
+  window.scrollTo(0,0); render();
+}
+window.addEventListener("popstate",function(){
+  var h=location.hash; setView(/^#m=/.test(h)?decodeURIComponent(h.slice(3)):"list",false);
+});
+document.addEventListener("click",function(ev){
+  var e=ev.target, s=e.closest&&e.closest(".sum [data-f]"), m=e.closest&&e.closest(".m[data-n]");
+  if(s){filter=s.getAttribute("data-f")===String(filter)?"all":s.getAttribute("data-f");render();return}
+  if(m){setView(m.getAttribute("data-n"),true)}
+});
+$("back").onclick=function(){if(history.length>1&&/^#m=/.test(location.hash))history.back();else setView("list",false)};
+
+/* ---------- خروج: پنجره‌ی داخل برنامه (به‌جای confirm مرورگر که آدرس سایت را نشان می‌داد) ---------- */
+function doLogout(){stopTimer();setSaved(null);cred=null;rec=null;who=null;detailFor=null;showLogin("")}
+$("menu").onclick=function(){
+  var u=(cred&&cred.u)||(getSaved()||{}).u||"";
+  $("mu").textContent=u;$("modal").classList.remove("hide");
+};
+$("mno").onclick=function(){$("modal").classList.add("hide")};
+$("myes").onclick=function(){$("modal").classList.add("hide");doLogout()};
+$("modal").addEventListener("click",function(e){if(e.target===$("modal"))$("modal").classList.add("hide")});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("modal").classList.add("hide")});
+
+function showLogin(msg){
+  $("v_app").classList.add("hide");$("v_login").classList.remove("hide");$("err").textContent=msg||"";
+  $("p").value="";
+}
+function showApp(){$("v_login").classList.add("hide");$("v_app").classList.remove("hide");
+  var h=location.hash; view=/^#m=/.test(h)?decodeURIComponent(h.slice(3)):"list"; setView(view,false); refresh(); startTimer()}
+async function doLogin(){
+  var u=$("u").value.trim(),p=$("p").value;
+  if(!u||!p){$("err").textContent="نام کاربری و رمز را وارد کنید.";return}
+  cred={u:u,p:p};$("err").textContent="در حال ورود...";
+  try{
+    var d=await call();
+    if(!d.ok){var m={invalid:"نام کاربری یا رمز اشتباه است.",locked:"چند بار ورود ناموفق؛ چند دقیقه صبر کنید.",no_users:"فهرست کاربران هنوز به ابر نرسیده است."}[d.error]||"ورود ناموفق.";cred=null;$("err").textContent=m;return}
+    if($("rem").checked)setSaved(cred);
+    who={name:d.name,role:d.role};rec={live:d.live,mtime:d.client_mtime,server:d.server_time,got:Date.now()/1000};
+    showApp();
+  }catch(e){cred=null;var m=(e&&e.message)||String(e);
+    if(/Failed to fetch|NetworkError|Load failed/i.test(m))m="اینترنت گوشی قطع است.";$("err").textContent=m}
+}
+$("go").onclick=doLogin;
+$("p").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin()});
+
+if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)){navigator.serviceWorker.register("sw.js").catch(function(){})}
+var sv=getSaved();
+if(sv&&sv.u&&sv.p){cred=sv;showApp()}else showLogin("");
+})();
+
+</script>
+</body>
+</html>
